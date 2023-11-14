@@ -14,7 +14,7 @@ pipeline {
 
         stage('CODE CHECKOUT') {
             steps {
-                git 'https://github.com/sunnydevops2022/devops_real_time_project_1.git'
+                git 'https://github.com/Mir9438/devops_real_time_project_1.git'
             }
         }
         
@@ -66,12 +66,6 @@ pipeline {
             }
         }
         
-        stage('DEPLOYMENT ON EKS') {
-            steps {
-                sh 'ansible-playbook playbooks/create_pod_on_eks.yml \
-                    --extra-vars "JOB_NAME=$JOB_NAME"'
-            }            
-        }          
-
+        
     }
 }      
