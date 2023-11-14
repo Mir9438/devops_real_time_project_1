@@ -26,12 +26,12 @@ pipeline {
                    '''
             }            
         }
-        stage('BUILD') {
+    stage('BUILD') {
             steps {
                 sh 'mvn clean install package'
             }
         }
-        stage('SONAR SCANNER') {
+    stage('SONAR SCANNER') {
             environment {
             sonar_token = credentials('SONAR_TOKEN')
             }
@@ -42,5 +42,11 @@ pipeline {
                     -Dsonar.token=$sonar_token'
             }
         } 
+    stage('COPY JAR & DOCKERFILE') {
+            steps {
+                sh 'ansible-playbook playbooks/create_directory.yml'
+            }
+        }
+        
     }
 }         
