@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-      PATH = "$PATH:/opt/apache-maven-3.9.1/bin"
+      PATH = "$PATH:/opt/apache-maven-3.9.5/bin"
     }
     
     stages {
@@ -14,10 +14,11 @@ pipeline {
 
         stage('CODE CHECKOUT') {
             steps {
-                git 'https://github.com/Mir9438/devops_real_time_project_1.git'
+                git 'https://github.com/sunnydevops2022/devops_real_time_project_1.git'
             }
         }
-    stage('MODIFIED IMAGE TAG') {
+        
+        stage('MODIFIED IMAGE TAG') {
             steps {
                 sh '''
                    sed "s/image-name:latest/$JOB_NAME:v1.$BUILD_ID/g" playbooks/dep_svc.yml
@@ -26,12 +27,14 @@ pipeline {
                    '''
             }            
         }
-    stage('BUILD') {
+        
+        stage('BUILD') {
             steps {
                 sh 'mvn clean install package'
             }
-        }
-    stage('SONAR SCANNER') {
+        } 
+        
+        stage('SONAR SCANNER') {
             environment {
             sonar_token = credentials('SONAR_TOKEN')
             }
@@ -42,13 +45,14 @@ pipeline {
                     -Dsonar.token=$sonar_token'
             }
         } 
-    stage('COPY JAR & DOCKERFILE') {
+        
+        stage('COPY JAR & DOCKERFILE') {
             steps {
                 sh 'ansible-playbook playbooks/create_directory.yml'
             }
         }
-
-   stage('PUSH IMAGE ON DOCKERHUB') {
+        
+        stage('PUSH IMAGE ON DOCKERHUB') {
             environment {
             dockerhub_user = credentials('DOCKERHUB_USER')            
             dockerhub_pass = credentials('DOCKERHUB_PASS')
@@ -61,5 +65,13 @@ pipeline {
                     --extra-vars "dockerhub_pass=$dockerhub_pass"'              
             }
         }
+        
+        stage('DEPLOYMENT ON EKS') {
+            steps {
+                sh 'ansible-playbook playbooks/create_pod_on_eks.yml \
+                    --extra-vars "JOB_NAME=$JOB_NAME"'
+            }            
+        }          
+
     }
-}         
+}      
