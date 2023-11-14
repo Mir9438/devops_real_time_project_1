@@ -3,13 +3,12 @@
   hosts: all
   remote_user: root
   tasks:
-     - name: TAG IMAGE WITH BUILD ID & LATEST
-       shell: |
+    - name: TAG IMAGE WITH BUILD ID & LATEST
+      shell: |
         cd /opt/docker
-          DOCKER_BUILDKIT=0 docker build -t {{ JOB_NAME }}:v1.{{ BUILD_ID }} .
-          DOCKER_BUILDKIT=0 docker tag {{ JOB_NAME }}:v1.{{ BUILD_ID }} {{ dockerhub_user }}/{{ JOB_NAME }}:v1.{{ BUILD_ID }}
-          DOCKER_BUILDKIT=0 docker tag {{ JOB_NAME }}:v1.{{ BUILD_ID }} {{ dockerhub_user }}/{{ JOB_NAME }}:latest
-
+        DOCKER_BUILDKIT=0 docker build -t {{ JOB_NAME }}:v1.{{ BUILD_ID }} .
+        DOCKER_BUILDKIT=0 docker tag {{ JOB_NAME }}:v1.{{ BUILD_ID }} {{ dockerhub_user }}/{{ JOB_NAME }}:v1.{{ BUILD_ID }}
+        DOCKER_BUILDKIT=0 docker tag {{ JOB_NAME }}:v1.{{ BUILD_ID }} {{ dockerhub_user }}/{{ JOB_NAME }}:latest
 
     - name: LOGIN DOCKERHUB & PUSH IMAGE ON REGISTRY
       shell: |        
@@ -22,3 +21,4 @@
 
     - name: LOGOUT DOCKERHUB
       shell: docker logout
+
