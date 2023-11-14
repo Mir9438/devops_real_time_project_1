@@ -1,3 +1,5 @@
+# playbooks/push_dockerhub.yml
+
 - name: IMAGE PUSH
   hosts: all
   remote_user: root
@@ -19,3 +21,4 @@
 
     - name: LOGOUT DOCKERHUB
       shell: docker logout
+
